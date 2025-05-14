@@ -62,17 +62,17 @@ async function verificaTagsDisponiveis(tagTexto) {
 
 inputTags.addEventListener("keypress", (evento) => {
     if (evento.key === "Enter") {
-    evento.preventDefault();
-    const tagTexto = inputTags.value.trim();
-        if (tagTexto !== "" && tagsDisponiveis.includes(tagTexto)) {
-            const tagNova = document.createElement("li");
-            tagNova.innerHTML = `${tagTexto} <img src="img/close-black.svg" class="remove-tag">`;
-            listaTags.appendChild(tagNova);
-            inputTags.value = "";
-        } else {
-            alert("Tag inválida!");
+        evento.preventDefault();
+        const tagTexto = inputTags.value.trim();
+            if (tagTexto !== "" && tagsDisponiveis.includes(tagTexto)) {
+                const tagNova = document.createElement("li");
+                tagNova.innerHTML = `${tagTexto} <img src="img/close-black.svg" class="remove-tag">`;
+                listaTags.appendChild(tagNova);
+                inputTags.value = "";
+            } else {
+                alert("Tag inválida!");
+            };
         };
-    };
-})
+    });
 
 
