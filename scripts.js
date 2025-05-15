@@ -1,32 +1,33 @@
-const uploadBtn = document.getElementById("upload-btn");
-const inputUpload = document.getElementById("image-upload");
+const uploadBtn = document.getElementById('upload-btn');
+const inputUpload = document.getElementById('image-upload');
 
-uploadBtn.addEventListener("click", () => {
+uploadBtn.addEventListener('click', () => {
     inputUpload.click();
-})
+});
 
 function lerConteudoDoArquivo(arquivo) {
     return new Promise((resolve, reject) => {
         const leitor = new FileReader();
 
         leitor.onload = () => {
-            resolve({ 
+            resolve({
                 url: leitor.result,
-                nome: arquivo.name })
-        }
+                nome: arquivo.name,
+            });
+        };
 
         leitor.onerror = () => {
-            reject(`Erro na leitura do arquivo ${arquivo.name}`)
-        }
+            reject(`Erro na leitura do arquivo ${arquivo.name}`);
+        };
 
         leitor.readAsDataURL(arquivo);
-    })
+    });
 }
 
-const imagemPrincipal = document.querySelector(".main-imagem");
-const nomeDaImagem = document.querySelector(".container-imagem-nome p")
+const imagemPrincipal = document.querySelector('.main-imagem');
+const nomeDaImagem = document.querySelector('.container-imagem-nome p');
 
-inputUpload.addEventListener("change", async (evento) => {
+inputUpload.addEventListener('change', async (evento) => {
     const arquivo = evento.target.files[0];
 
     if (arquivo) {
@@ -35,44 +36,50 @@ inputUpload.addEventListener("change", async (evento) => {
             imagemPrincipal.src = conteudoDoArquivo.url;
             nomeDaImagem.textContent = conteudoDoArquivo.nome;
         } catch (erro) {
-            console.log("Erro na leitura do arquivo");
-        };
-    };
+            console.log('Erro na leitura do arquivo');
+        }
+    }
 });
 
-const inputTags = document.getElementById("input-tags");
-const listaTags = document.getElementById("lista-tags");
+const inputTags = document.getElementById('input-tags');
+const listaTags = document.getElementById('lista-tags');
 
-listaTags.addEventListener("click", (evento) => {
-    if (evento.target.classList.contains("remove-tag")) {
+listaTags.addEventListener('click', (evento) => {
+    if (evento.target.classList.contains('remove-tag')) {
         const tagRemovida = evento.target.parentElement;
         listaTags.removeChild(tagRemovida);
-    };
+    }
 });
 
-const tagsDisponiveis = ["Front-end", "Programação", "Data Science", "Full-stack", "HTML", "CSS", "JavaScript"];
+const tagsDisponiveis = ['Front-end', 'Programação', 'Data Science', 'Full-stack', 'HTML', 'CSS', 'JavaScript'];
 
 async function verificaTagsDisponiveis(tagTexto) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(tagsDisponiveis.includes(tagTexto));
-        }, 1000)
-    })
+        }, 1000);
+    });
 }
 
-inputTags.addEventListener("keypress", (evento) => {
-    if (evento.key === "Enter") {
+inputTags.addEventListener('keypress', async (evento) => {
+    if (evento.key === 'Enter') {
         evento.preventDefault();
         const tagTexto = inputTags.value.trim();
-            if (tagTexto !== "" && tagsDisponiveis.includes(tagTexto)) {
-                const tagNova = document.createElement("li");
-                tagNova.innerHTML = `${tagTexto} <img src="img/close-black.svg" class="remove-tag">`;
-                listaTags.appendChild(tagNova);
-                inputTags.value = "";
-            } else {
-                alert("Tag inválida!");
-            };
-        };
-    });
-
-
+        if (tagTexto !== '') {
+            try {
+                const tagExiste = await verificaTagsDisponiveis(tagTexto);
+                if (tagExiste) {
+                    const tagNova = document.createElement('li');
+                    tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`;
+                    listaTags.appendChild(tagNova);
+                    inputTags.value = '';
+                } else {
+                    alert('Tag nãol foi encontrada.');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar a existência da tag', error);
+                alert('Erro ao verificar a existência da tag. Verifique o console.');
+            }
+        }
+    }
+});
