@@ -1,5 +1,11 @@
 const uploadBtn = document.getElementById('upload-btn');
 const inputUpload = document.getElementById('image-upload');
+const imagemPrincipal = document.querySelector('.main-imagem');
+const nomeDaImagem = document.querySelector('.container-imagem-nome p');
+const inputTags = document.getElementById('input-tags');
+const listaTags = document.getElementById('lista-tags');
+const botaoPublicar = document.querySelector('.botao-publicar');
+const botaoDescartar = document.querySelector('.botao-descartar');
 
 uploadBtn.addEventListener('click', () => {
     inputUpload.click();
@@ -24,9 +30,6 @@ function lerConteudoDoArquivo(arquivo) {
     });
 }
 
-const imagemPrincipal = document.querySelector('.main-imagem');
-const nomeDaImagem = document.querySelector('.container-imagem-nome p');
-
 inputUpload.addEventListener('change', async (evento) => {
     const arquivo = evento.target.files[0];
 
@@ -40,9 +43,6 @@ inputUpload.addEventListener('change', async (evento) => {
         }
     }
 });
-
-const inputTags = document.getElementById('input-tags');
-const listaTags = document.getElementById('lista-tags');
 
 listaTags.addEventListener('click', (evento) => {
     if (evento.target.classList.contains('remove-tag')) {
@@ -84,19 +84,6 @@ inputTags.addEventListener('keypress', async (evento) => {
     }
 });
 
-const botaoPublicar = document.querySelector('.botao-publicar');
-
-botaoPublicar.addEventListener('click', async (evento) => {
-    evento.preventDefault();
-
-    const nomeDoProjeto = document.getElementById('nome').value;
-    const descricaoDoProjeto = document.getElementById('descricao').value;
-    const tagsProjeto = Array.from(listaTags.querySelectorAll('p')).map((tag) => tag.textContent);
-
-    console.log(nomeDoProjeto);
-    console.log(descricaoDoProjeto);
-    console.log(tagsProjeto);
-});
 async function publicarProjeto(nomeDoProjeto, descricaoDoProjeto, tagsProjeto) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -110,3 +97,32 @@ async function publicarProjeto(nomeDoProjeto, descricaoDoProjeto, tagsProjeto) {
         }, 2000);
     });
 };
+
+botaoPublicar.addEventListener('click', async (evento) => {
+    evento.preventDefault();
+
+    const nomeDoProjeto = document.getElementById('nome').value;
+    const descricaoDoProjeto = document.getElementById('descricao').value;
+    const tagsProjeto = Array.from(listaTags.querySelectorAll('p')).map((tag) => tag.textContent);
+
+    try {
+        const resultado = await publicarProjeto(nomeDoProjeto, descricaoDoProjeto, tagsProjeto);
+        console.log(resultado);
+        alert('Deu tudo certo!')
+    } catch (error) {
+        console.log('Deu errado', error);
+        alert('Deu tudo errado!');
+    }
+});
+
+botaoDescartar.addEventListener('click', (evento) => {
+    evento.preventDefault();
+
+    const form = document.querySelector('form');
+    form.reset();
+
+    imagemPrincipal.src = './img/imagem1.png';
+    nomeDaImagem.textContent = 'image_projeto.png';
+
+    listaTags.innerHTML = '';
+})
